@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Users
   class SessionsController < Devise::SessionsController
     include RackSessionsFix
@@ -18,7 +16,7 @@ module Users
 
     def respond_to_on_destroy
       if request.headers['Authorization'].present?
-        jwt_payload = JWT.decode(request.headers['Authorization'].split(' ').last, 'SECRET').first
+        jwt_payload = JWT.decode(request.headers['Authorization'].split.last, 'SECRET').first
         current_user = User.find(jwt_payload['sub'])
       end
 
