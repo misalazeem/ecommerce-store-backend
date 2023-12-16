@@ -1,8 +1,5 @@
 class User < ApplicationRecord
-  has_one :user_profile, dependent: :destroy
-  has_many :orders, dependent: :nullify
+  include Devise::JWT::RevocationStrategies::JTIMatcher
 
-  validates :username, presence: true, length: { maximum: 50 }
-  validates :email, presence: true, uniqueness: true, length: { maximum: 255 }
-  validates :password_hash, presence: true
+  devise :database_authenticatable, :registerable, :recoverable, :validatable, :jwt_authenticatable, jwt_revocation_strategy: self
 end
