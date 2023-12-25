@@ -1,4 +1,5 @@
 class Product < ApplicationRecord
+  belongs_to :category
   has_many :inventory, dependent: :destroy
   has_many :order_items, dependent: :destroy
   has_many :product_reviews, dependent: :destroy
