@@ -5,6 +5,10 @@ module Users
 
     private
 
+    def sign_up_params
+      params.require(:registration).permit(:email, :password)
+    end
+
     def respond_with(current_user, _opts = {})
       if resource.persisted?
         render json: {
