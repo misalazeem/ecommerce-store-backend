@@ -3,16 +3,30 @@ module Users
     include RackSessionsFix
     respond_to :json
 
-    private
+    # POST /login
+    def create
+      user = User.find_for_authentication(email: params[:email])
 
-    def respond_with(current_user, _opts = {})
-      render json: {
-        status: {
-          code: 200, message: 'Logged in successfully.',
-          data: { user: UserSerializer.new(current_user).serializable_hash[:data][:attributes] }
-        }
-      }, status: :ok
+      if user && user.valid_password?(params[:password])
+        sign_in(user)
+        render json: {
+          status: {
+            code: 200,
+            message: 'Logged in successfully.',
+            data: { user: UserSerializer.new(user).serializable_hash[:data][:attributes] }
+          }
+        }, status: :ok
+      else
+        render json: {
+          status: {
+            code: 401,
+            message: 'Invalid email or password.'
+          }
+        }, status: :unauthorized
+      end
     end
+
+    private
 
     def respond_to_on_destroy
       if request.headers['Authorization'].present?
